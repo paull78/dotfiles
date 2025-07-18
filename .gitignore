@@ -1,0 +1,8 @@
+# OS stuff
+.DS_Store
+*.swp
+
+# Secret or machine-specific files
+zsh/.zsh_history
+zsh/.zsh_sessions
+starship/.config/starship.local.toml
