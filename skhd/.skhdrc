@@ -1,0 +1,16 @@
+# Minimal skhd config - Alt shortcuts only
+
+alt - b : open -a "Bear"
+alt - c : open -a "Confluence"
+alt - d : open -a "Claude"
+alt - e : open -a "Microsoft Edge"
+alt - f : open -a "Finder"
+alt - g : open -a "Ghostty"
+alt - j : open -a "Jira"
+alt - l : open -a "Slack"
+alt - m : open -a "Mail"
+alt - p : open -a "Spark"
+alt - s : open -a "Safari"
+alt - t : open -a "iTerm"
+alt - v : open -a "Visual Studio Code"
+alt - w : open -a "WhatsApp"
