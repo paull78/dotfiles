@@ -11,6 +11,7 @@ Create a detailed PRD for major feature: $ARGUMENTS
 !`find . -name "README.md" -o -name "package.json" -o -name "*.md" | head -5`
 !`find . -name "docs" -type d | head -3`
 !`grep -r "TODO\|FIXME\|Feature" --include="*.md" . | head -3`
+!`git branch --show-current`
 
 ## Project Integration:
 - Review existing documentation: @README.md
@@ -90,19 +91,71 @@ docs/features/[feature-name]/
 ├── 06-testing-strategy.md              # QA plan & test cases
 ├── 07-deployment-plan.md               # Release & rollout strategy
 ├── 08-success-metrics.md               # KPIs & measurement plan
+├── 09-progress-tracking.md             # Implementation progress & updates
 └── assets/                             # Diagrams, wireframes, mockups
     ├── architecture-diagram.md         # Mermaid system diagrams
     ├── user-flow-diagram.md            # User journey flows
     └── database-schema.md              # ERD diagrams
 ```
 
+## Implementation Workflow Guide:
+
+### Phase 1: PRD Creation & Review
+1. **Generate comprehensive PRD** (this command)
+2. **Review with stakeholders** (PM, tech lead, design)
+3. **Refine requirements** based on feedback
+4. **Get stakeholder sign-off** on scope and timeline
+
+### Phase 2: Development Setup
+1. **Create feature branch**: `git checkout -b feature/[feature-name]`
+2. **Create GitHub issue/epic** linking to PRD
+3. **Set up project tracking** (Jira tickets, GitHub projects)
+4. **Schedule kickoff meeting** with development team
+
+### Phase 3: Implementation
+1. **Reference PRD documents** during development
+2. **Update progress tracking** as phases complete
+3. **Regular check-ins** against success metrics
+4. **Document implementation decisions** and changes
+
+### Phase 4: Testing & Deployment
+1. **Execute testing strategy** as defined in PRD
+2. **Follow deployment plan** for gradual rollout
+3. **Monitor success metrics** post-launch
+4. **Retrospective and lessons learned**
+
+## Claude Code Integration Commands:
+
+### For Implementation:
+```
+> Read the implementation plan: @docs/features/[feature-name]/03-implementation-plan.md
+> Let's implement Phase 1 as described in the technical architecture: @docs/features/[feature-name]/02-technical-architecture.md
+> Update the progress tracking: @docs/features/[feature-name]/09-progress-tracking.md
+```
+
+### For Progress Updates:
+```
+> Mark Phase 1 as completed in @docs/features/[feature-name]/09-progress-tracking.md
+> Update the implementation plan with what we actually built
+> Add notes about implementation decisions and changes
+```
+
+### For Testing:
+```
+> Implement the test cases defined in @docs/features/[feature-name]/06-testing-strategy.md
+> Update test coverage and mark completed test scenarios
+```
+
 ## Output Requirements:
 - **Create comprehensive, interconnected documentation**
+- **Include progress tracking template** with checkboxes
+- **Add implementation workflow guide**
 - **Include mermaid diagrams** for architecture and flows
 - **Add actionable checklists** for each development phase
 - **Include cross-references** between documents
 - **Provide realistic estimates** based on project complexity
 - **Add placeholder sections** for stakeholder sign-offs
 - **Create templates** for ongoing tracking and updates
+- **Include Claude Code reference commands** for implementation
 
-Generate professional, detailed documentation that serves as the definitive guide for implementing this major feature across all engineering disciplines.
+Generate professional, detailed documentation that serves as both planning document and implementation guide, with clear workflows for using Claude Code throughout the development process.
