@@ -1,142 +1,145 @@
 # Claude Code Commands
 
-This Stow package contains custom Claude Code commands for **complete feature development lifecycle** in large projects.
+Simple, focused commands for **solo feature development** in existing projects.
 
 ## Available Commands
 
-### `/feature-prd [feature-name]`
-Generate a comprehensive Product Requirements Document for major feature development.
+### `/plan-feature [feature-name]`
+Create PRD and ordered task list for a new feature.
 
-### `/implement-feature [feature-name]`  
-Start implementing a feature based on existing PRD documentation.
+### `/work-feature [feature-name]`  
+Continue implementing from task list, auto-marking tasks as completed.
 
-### `/track-feature [feature-name]`
-Update feature implementation progress and track development status.
+## Simple Solo Development Workflow
 
-## Complete Development Workflow
-
-### **Phase 1: Planning & PRD Creation**
+### **Step 1: Plan Your Feature**
 ```bash
 cd ~/your-project
 claude
-/feature-prd "User Authentication System"
+/plan-feature "User Authentication"
 ```
 
-**What it creates:**
-- Comprehensive PRD with 9 documents in `docs/features/user-authentication-system/`
-- Technical architecture, API specs, database design
-- Implementation phases, testing strategy, success metrics
-- Progress tracking template for ongoing development
+**What happens:**
+- Analyzes your existing codebase
+- **Asks for branch name** (e.g., `feature/user-auth`)
+- Creates focused PRD in `docs/features/user-authentication/`
+- **Generates ordered task list** with 15-20 specific, actionable tasks
+- Records branch name in documentation
 
-### **Phase 2: Development Setup**
+### **Step 2: Start Implementation**
 ```bash
-# Exit Claude Code
-git checkout -b feature/user-authentication-system
+# Create the branch (when you specified in planning)
+git checkout -b feature/user-auth
 
-# Optional: Create GitHub issue
-gh issue create --title "User Authentication System" \
-  --body "Implementation plan: docs/features/user-authentication-system/README.md"
-
-# Start implementation
+# Start working through tasks
 claude
-/implement-feature "user-authentication-system"
+/work-feature "user-authentication"
 ```
 
-**What it does:**
-- Loads all PRD documentation into context
-- Guides you through Phase 1 implementation
-- Provides specific commands for database, API, frontend work
-- Sets up proper git workflow and team coordination
+**What happens:**
+- **Verifies you're on correct branch** (stops if not)
+- Finds next unchecked task from task list
+- Implements the task completely
+- **Auto-marks task as done** ✅
+- Points to next task for easy resumption
 
-### **Phase 3: Development & Progress Tracking**
+### **Step 3: Resume Development (anytime)**
 ```bash
-# During development (weekly/as needed)
+# Continue where you left off
 claude
-/track-feature "user-authentication-system"
-
-# For specific implementation tasks
-> Based on @docs/features/user-authentication-system/04-api-specification.md,
-> implement the login endpoint following our existing API patterns
-
-> Update @docs/features/user-authentication-system/09-progress-tracking.md
-> to mark Phase 1: Database Setup as completed
+/work-feature "user-authentication"
 ```
 
-**What it tracks:**
-- Phase completion status with dates
-- Implementation decisions and changes
-- Timeline adherence and adjustments
-- Test coverage and quality metrics
+**Always:**
+- Checks branch correctness first
+- Finds next unchecked task automatically
+- Implements completely and marks done
+- Makes resumption effortless
 
-## Generated Documentation Structure
+## Generated Structure
 
 ```
-docs/features/[feature-name]/
-├── README.md                           # Feature overview & navigation
-├── 01-requirements.md                  # Detailed functional & non-functional requirements
-├── 02-technical-architecture.md        # System design & architecture patterns
-├── 03-implementation-plan.md           # Development phases & task breakdown
-├── 04-api-specification.md             # API design & endpoint specifications
-├── 05-database-design.md               # Schema changes & migration plans
-├── 06-testing-strategy.md              # QA plan & comprehensive test cases
-├── 07-deployment-plan.md               # Release strategy & rollout plan
-├── 08-success-metrics.md               # KPIs & measurement framework
-├── 09-progress-tracking.md             # Implementation progress & updates ⭐ NEW
-└── assets/                             # Diagrams, wireframes, mockups
-    ├── architecture-diagram.md         # Mermaid system diagrams
-    ├── user-flow-diagram.md            # User journey flows
-    └── database-schema.md              # ERD diagrams
+docs/features/user-authentication/
+├── README.md          # Feature overview & requirements
+├── TASKS.md           # ✅ Ordered task list with auto-completion
+└── ARCHITECTURE.md    # Technical implementation details
 ```
 
-## Key Workflow Benefits
+## Task List Example
 
-### **🔄 Living Documentation**
-- PRD stays current with implementation reality
-- Progress tracking shows real status, not just estimates
-- Implementation decisions are documented as they happen
+```markdown
+# Implementation Tasks for User Authentication
 
-### **🤝 Team Coordination**
-- Clear phase-based development with measurable milestones
-- Stakeholder updates based on concrete progress metrics
-- Code reviews reference specific PRD requirements
+**Branch**: feature/user-auth
+**Status**: In Progress
 
-### **⚡ Claude Code Integration**
-- Commands automatically load relevant PRD context
-- Implementation guidance based on architectural decisions
-- Progress updates maintain documentation accuracy
+## Database & Backend Tasks
+- [x] 1. Create user table migration ✅ 2025-08-09
+- [x] 2. Implement User model with validations ✅ 2025-08-09  
+- [ ] 3. Create AuthService for JWT handling
+- [ ] 4. Implement /auth/login and /auth/register endpoints
+- [ ] 5. Add password hashing and validation
 
-### **📊 Professional Output**
-- Enterprise-ready documentation for stakeholder review
-- Realistic timelines based on project complexity analysis
-- Risk assessment and mitigation strategies
+## Frontend Tasks
+- [ ] 6. Create LoginForm component
+- [ ] 7. Create RegisterForm component
+- [ ] 8. Add authentication state management
+- [ ] 9. Implement protected route wrapper
 
-## Example: Complete Authentication Feature
+**Next Task**: Task 3 - Create AuthService for JWT handling
+```
+
+## Key Benefits for Solo Development
+
+### **🎯 Focused Planning**
+- No timeline estimation overhead
+- No team coordination complexity
+- Just: requirements → architecture → tasks
+
+### **⚡ Effortless Resumption**
+- Always knows exactly what to do next
+- Auto-marks completed work
+- Never lose progress or forget where you were
+
+### **🔒 Branch Safety**
+- Enforces correct branch before starting work
+- Prevents accidental commits to wrong branch
+- Keeps feature development isolated
+
+### **📋 Task-Driven Development**
+- Breaks complex features into bite-sized tasks
+- Each task completable in one session
+- Clear progress visibility
+
+## Example: Complete Auth Feature
 
 ```bash
-# 1. Create comprehensive PRD
-/feature-prd "User Authentication System"
+# 1. Plan the feature
+cd ~/my-app
+claude
+/plan-feature "User Authentication"
+# → Asks for branch name: "feature/user-auth"
+# → Creates PRD + 16 ordered tasks
 
-# 2. Review and refine (still in Claude Code)
-> Update the timeline in @docs/features/user-authentication-system/03-implementation-plan.md 
-> based on our team of 3 engineers and 6-week deadline
+# 2. Start development
+git checkout -b feature/user-auth
+claude
+/work-feature "user-authentication"
+# → Implements Task 1: Create user table migration
+# → Auto-marks as done ✅
+# → Points to Task 2
 
-# 3. Set up development
-git checkout -b feature/user-authentication-system
+# 3. Continue next day
+claude
+/work-feature "user-authentication"  
+# → Checks branch ✅
+# → Finds Task 2: Implement User model
+# → Implements and marks done ✅
 
-# 4. Start implementation  
-/implement-feature "user-authentication-system"
-
-# 5. Implement Phase 1
-> Based on @docs/features/user-authentication-system/05-database-design.md,
-> create the user authentication database schema and migrations
-
-# 6. Track progress
-/track-feature "user-authentication-system"
-> Mark Phase 1 as completed and update timeline for Phase 2
-
-# 7. Continue development with full PRD context
-> Implement the JWT authentication endpoints as specified in 
-> @docs/features/user-authentication-system/04-api-specification.md
+# 4. Resume after break
+claude
+/work-feature "user-authentication"
+# → Always picks up exactly where you left off
 ```
 
 ## Installation
@@ -146,43 +149,19 @@ cd ~/dotfiles
 stow claude
 ```
 
-## Best Practices
+## Perfect For
 
-### **Always start from project root**
-```bash
-cd ~/your-project  # Important for context analysis
-claude
-```
+✅ **Solo developers** working on personal or small projects  
+✅ **Complex features** that need breaking down into manageable tasks  
+✅ **Resumable development** across multiple sessions  
+✅ **Branch-based workflows** with proper isolation  
+✅ **Existing projects** requiring integration planning  
 
-### **Use descriptive feature names**
-- ✅ "User Authentication System"
-- ✅ "Advanced Search & Filtering"  
-- ❌ "Auth" or "Search"
+## Not Suitable For
 
-### **Follow the phase-based approach**
-1. Complete PRD planning first
-2. Get stakeholder sign-off
-3. Set up git workflow
-4. Implement phase by phase
-5. Track progress regularly
+❌ Team coordination and collaboration  
+❌ Timeline estimation and project management  
+❌ Simple bug fixes (overkill)  
+❌ Experimental prototyping  
 
-### **Keep documentation current**
-- Update progress tracking weekly
-- Document implementation decisions
-- Revise timelines based on actual progress
-- Add lessons learned for future features
-
-## Use Cases
-
-✅ **Perfect for:**
-- Major feature additions (4+ weeks development)
-- Cross-team coordination requirements
-- Complex integration with existing systems
-- Professional development environments
-- Features requiring stakeholder oversight
-
-❌ **Overkill for:**
-- Bug fixes or minor improvements
-- Simple UI changes
-- Quick experiments or prototypes
-- Solo developer side projects
+Keep it simple, stay focused, get features done. 🚀
