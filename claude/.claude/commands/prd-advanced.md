@@ -1,63 +1,42 @@
 ---
-description: Generate a comprehensive PRD with competitive analysis and detailed technical specs
-allowed-tools: Edit, Write
+description: Generate PRD with organized docs folder structure
 ---
 
-# Advanced Product Requirements Document Generator
+# Advanced PRD Generator with Docs Organization
 
-Create a detailed, enterprise-ready PRD for: $ARGUMENTS
+Create a detailed PRD for: $ARGUMENTS
 
-## Comprehensive PRD Structure:
+## File Structure Creation:
+First, create a `docs/prd/` directory structure, then generate:
 
-### 1. Executive Summary
-- Product vision and mission alignment
-- Key value propositions
-- Success criteria and ROI projections
-- Executive sponsor and stakeholder matrix
+```
+docs/
+└── prd/
+    ├── [product-name]-prd.md           # Main PRD
+    ├── [product-name]-technical-spec.md # Technical details
+    ├── [product-name]-user-research.md  # User personas & research
+    ├── [product-name]-requirements.md   # Detailed requirements
+    └── assets/                         # Diagrams, wireframes
+```
 
-### 2. Market Analysis
-- Target market size and segmentation
-- Competitive landscape analysis
-- Market opportunity and positioning
-- Customer research insights
+## PRD Components:
+1. **Executive Summary** (1-page overview)
+2. **Market Analysis** (competitive landscape)
+3. **User Research** (personas, user journeys)
+4. **Product Strategy** (vision, positioning)
+5. **Functional Requirements** (features, user stories)
+6. **Technical Requirements** (architecture, APIs)
+7. **Design Requirements** (UI/UX guidelines)
+8. **Success Metrics** (KPIs, analytics)
+9. **Implementation Plan** (phases, timeline)
+10. **Risk Assessment** (technical, market, resource risks)
 
-### 3. Product Strategy
-- Product goals and objectives (SMART criteria)
-- Feature prioritization matrix (MoSCoW)
-- Product roadmap alignment
-- Success metrics and KPIs
+## Instructions:
+1. **Create directory structure** first: `mkdir -p docs/prd/assets`
+2. **Generate main PRD** in `docs/prd/[product-name]-prd.md`
+3. **Create supporting documents** in the same folder
+4. **Include cross-references** between documents
+5. **Add placeholder mermaid diagrams** for workflows
+6. **Create tables** for requirements tracking
 
-### 4. User Experience
-- User personas and journey mapping
-- User stories with acceptance criteria
-- Wireframes and mockup references
-- Accessibility and usability requirements
-
-### 5. Technical Specifications
-- System architecture requirements
-- API specifications and integrations
-- Performance and scalability requirements
-- Security and compliance considerations
-- Data models and storage requirements
-
-### 6. Implementation Plan
-- Development phases and milestones
-- Resource allocation and team structure
-- Risk assessment and mitigation strategies
-- Testing and quality assurance plan
-- Deployment and rollout strategy
-
-### 7. Go-to-Market
-- Launch strategy and timeline
-- Marketing and sales enablement
-- Customer support requirements
-- Training and documentation needs
-
-## Output Format:
-- Create structured markdown document
-- Include tables for feature tracking
-- Add mermaid diagrams for workflows
-- Use checkboxes for actionable items
-- Include template sections for sign-offs
-
-Generate a professional, comprehensive PRD that can be used for stakeholder alignment and development planning.
+Organize all documents with consistent formatting, clear navigation links between files, and actionable next steps.
