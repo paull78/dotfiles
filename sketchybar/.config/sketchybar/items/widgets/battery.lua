@@ -29,6 +29,9 @@ local remaining_time = sbar.add("item", {
   },
 })
 
+-- Track popup visibility locally to avoid :query() deadlock
+local battery_popup_visible = false
+
 
 battery:subscribe({"routine", "power_source_change", "system_woke"}, function()
   sbar.exec("pmset -g batt", function(batt_info)
@@ -67,25 +70,36 @@ battery:subscribe({"routine", "power_source_change", "system_woke"}, function()
       lead = "0"
     end
 
-    battery:set({
-      icon = {
-        string = icon,
-        color = color
-      },
-      label = { string = lead .. label },
-    })
+    -- DEADLOCK FIX: Wrap :set() in sbar.exec callback
+    sbar.delay(0.1, function()
+      battery:set({
+        icon = {
+          string = icon,
+          color = color
+        },
+        label = { string = lead .. label },
+      })
+    end)
   end)
 end)
 
 battery:subscribe("mouse.clicked", function(env)
-  local drawing = battery:query().popup.drawing
-  battery:set( { popup = { drawing = "toggle" } })
+  -- Use local state instead of :query() to avoid IPC deadlock
+  local was_hidden = not battery_popup_visible
+  battery_popup_visible = not battery_popup_visible
+  -- DEADLOCK FIX: Defer :set() call
+  sbar.delay(0.1, function()
+    battery:set( { popup = { drawing = "toggle" } })
+  end)
 
-  if drawing == "off" then
+  if was_hidden then
     sbar.exec("pmset -g batt", function(batt_info)
       local found, _, remaining = batt_info:find(" (%d+:%d+) remaining")
       local label = found and remaining .. "h" or "No estimate"
-      remaining_time:set( { label = label })
+      -- DEADLOCK FIX: Wrap :set() in sbar.exec callback
+      sbar.delay(0.1, function()
+        remaining_time:set( { label = label })
+      end)
     end)
   end
 end)

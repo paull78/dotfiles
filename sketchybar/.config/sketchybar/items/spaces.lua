@@ -69,14 +69,17 @@ for i = 1, 10, 1 do
 	space:subscribe("space_change", function(env)
 		local selected = env.SELECTED == "true"
 		local color = selected and colors.grey or colors.bg2
-		space:set({
-			icon = { highlight = selected },
-			label = { highlight = selected },
-			background = { border_color = selected and colors.black or colors.bg2 },
-		})
-		space_bracket:set({
-			background = { border_color = selected and colors.grey or colors.bg2 },
-		})
+		-- DEADLOCK FIX: Defer :set() calls
+		sbar.delay(0.1, function()
+			space:set({
+				icon = { highlight = selected },
+				label = { highlight = selected },
+				background = { border_color = selected and colors.black or colors.bg2 },
+			})
+			space_bracket:set({
+				background = { border_color = selected and colors.grey or colors.bg2 },
+			})
+		end)
 	end)
 
 	-- space:subscribe("mouse.clicked", function(env)
@@ -91,11 +94,13 @@ for i = 1, 10, 1 do
 	--
 	space:subscribe("mouse.clicked", function(env)
 		if env.BUTTON == "other" then
-			space_popup:set({ background = { image = "space." .. env.SID } })
-			space:set({ popup = { drawing = "toggle" } })
+			-- DEADLOCK FIX: Defer :set() calls
+			sbar.delay(0.1, function()
+				space_popup:set({ background = { image = "space." .. env.SID } })
+				space:set({ popup = { drawing = "toggle" } })
+			end)
 		else
 			local keycodes = {
-				[0] = 29, -- 0 (desktop 10)
 				[1] = 18,
 				[2] = 19,
 				[3] = 20,
@@ -105,6 +110,7 @@ for i = 1, 10, 1 do
 				[7] = 26,
 				[8] = 28,
 				[9] = 25,
+				[10] = 29, -- 0 (desktop 10)
 			}
 
 			local idx = tonumber(env.NAME:match("space%.(%d+)$"))
@@ -121,7 +127,10 @@ for i = 1, 10, 1 do
 	end)
 
 	space:subscribe("mouse.exited", function(_)
-		space:set({ popup = { drawing = false } })
+		-- DEADLOCK FIX: Defer :set() call
+		sbar.delay(0.1, function()
+			space:set({ popup = { drawing = false } })
+		end)
 	end)
 end
 
@@ -152,6 +161,9 @@ local spaces_indicator = sbar.add("item", {
 	},
 })
 
+-- Track spaces mode locally to avoid :query() deadlock
+local spaces_mode_on = true
+
 space_window_observer:subscribe("space_windows_change", function(env)
 	local icon_line = ""
 	local no_app = true
@@ -165,20 +177,32 @@ space_window_observer:subscribe("space_windows_change", function(env)
 	if no_app then
 		icon_line = " —"
 	end
-	sbar.animate("tanh", 10, function()
-		spaces[env.INFO.space]:set({ label = icon_line })
-	end)
+	-- DEADLOCK FIX: Defer the :set() call to the next event loop cycle
+	-- This breaks the synchronous IPC chain that was causing deadlock:
+	-- sketchybar -> lua (space_windows_change) -> sketchybar (:set) -> waiting...
+	local space_idx = env.INFO.space
+	if space_idx and spaces[space_idx] then
+		sbar.delay(0.1, function()
+			spaces[space_idx]:set({ label = icon_line })
+		end)
+	end
 end)
 
 spaces_indicator:subscribe("swap_menus_and_spaces", function(env)
-	local currently_on = spaces_indicator:query().icon.value == icons.switch.on
-	spaces_indicator:set({
-		icon = currently_on and icons.switch.off or icons.switch.on,
-	})
+	-- Use local state instead of :query() to avoid IPC deadlock
+	spaces_mode_on = not spaces_mode_on
+	-- DEADLOCK FIX: Defer :set() call
+	sbar.delay(0.1, function()
+		spaces_indicator:set({
+			icon = spaces_mode_on and icons.switch.on or icons.switch.off,
+		})
+	end)
 end)
 
 spaces_indicator:subscribe("mouse.entered", function(env)
-	sbar.animate("tanh", 30, function()
+	-- Removed animation wrapper to prevent IPC deadlock
+	-- DEADLOCK FIX: Defer :set() call
+	sbar.delay(0.1, function()
 		spaces_indicator:set({
 			background = {
 				color = { alpha = 1.0 },
@@ -191,7 +215,9 @@ spaces_indicator:subscribe("mouse.entered", function(env)
 end)
 
 spaces_indicator:subscribe("mouse.exited", function(env)
-	sbar.animate("tanh", 30, function()
+	-- Removed animation wrapper to prevent IPC deadlock
+	-- DEADLOCK FIX: Defer :set() call
+	sbar.delay(0.1, function()
 		spaces_indicator:set({
 			background = {
 				color = { alpha = 0.0 },
@@ -204,5 +230,8 @@ spaces_indicator:subscribe("mouse.exited", function(env)
 end)
 
 spaces_indicator:subscribe("mouse.clicked", function(env)
-	sbar.trigger("swap_menus_and_spaces")
+	-- DEADLOCK FIX: Defer trigger call
+	sbar.delay(0.1, function()
+		sbar.trigger("swap_menus_and_spaces")
+	end)
 end)

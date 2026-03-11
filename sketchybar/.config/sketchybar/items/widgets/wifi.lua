@@ -154,59 +154,96 @@ local router = sbar.add("item", {
 
 sbar.add("item", { position = "right", width = settings.group_paddings })
 
+-- Track popup visibility locally to avoid :query() deadlock
+local wifi_popup_visible = false
+
 wifi_up:subscribe("network_update", function(env)
   local up_color = (env.upload == "000 Bps") and colors.grey or colors.red
   local down_color = (env.download == "000 Bps") and colors.grey or colors.blue
-  wifi_up:set({
-    icon = { color = up_color },
-    label = {
-      string = env.upload,
-      color = up_color
-    }
-  })
-  wifi_down:set({
-    icon = { color = down_color },
-    label = {
-      string = env.download,
-      color = down_color
-    }
-  })
+  -- DEADLOCK FIX: Defer :set() calls
+  sbar.delay(0.1, function()
+    wifi_up:set({
+      icon = { color = up_color },
+      label = {
+        string = env.upload,
+        color = up_color
+      }
+    })
+    wifi_down:set({
+      icon = { color = down_color },
+      label = {
+        string = env.download,
+        color = down_color
+      }
+    })
+  end)
 end)
 
 wifi:subscribe({"wifi_change", "system_woke"}, function(env)
   sbar.exec("ipconfig getifaddr en0", function(ip)
     local connected = not (ip == "")
-    wifi:set({
-      icon = {
-        string = connected and icons.wifi.connected or icons.wifi.disconnected,
-        color = connected and colors.white or colors.red,
-      },
-    })
+    -- DEADLOCK FIX: Wrap :set() in sbar.exec callback
+    sbar.delay(0.1, function()
+      wifi:set({
+        icon = {
+          string = connected and icons.wifi.connected or icons.wifi.disconnected,
+          color = connected and colors.white or colors.red,
+        },
+      })
+    end)
   end)
 end)
 
+-- Cache labels locally to avoid sbar.query() deadlock
+local cached_labels = {}
+
+local function update_cached_label(item, label)
+  cached_labels[item.name] = label
+end
+
 local function hide_details()
-  wifi_bracket:set({ popup = { drawing = false } })
+  wifi_popup_visible = false
+  sbar.delay(0.1, function()
+    wifi_bracket:set({ popup = { drawing = false } })
+  end)
 end
 
 local function toggle_details()
-  local should_draw = wifi_bracket:query().popup.drawing == "off"
-  if should_draw then
-    wifi_bracket:set({ popup = { drawing = true }})
+  -- Use local state instead of :query() to avoid IPC deadlock
+  if not wifi_popup_visible then
+    wifi_popup_visible = true
+    sbar.delay(0.1, function()
+      wifi_bracket:set({ popup = { drawing = true }})
+    end)
     sbar.exec("networksetup -getcomputername", function(result)
-      hostname:set({ label = result })
+      update_cached_label(hostname, result)
+      sbar.delay(0.1, function()
+        hostname:set({ label = result })
+      end)
     end)
     sbar.exec("ipconfig getifaddr en0", function(result)
-      ip:set({ label = result })
+      update_cached_label(ip, result)
+      sbar.delay(0.1, function()
+        ip:set({ label = result })
+      end)
     end)
     sbar.exec("ipconfig getsummary en0 | awk -F ' SSID : '  '/ SSID : / {print $2}'", function(result)
-      ssid:set({ label = result })
+      update_cached_label(ssid, result)
+      sbar.delay(0.1, function()
+        ssid:set({ label = result })
+      end)
     end)
     sbar.exec("networksetup -getinfo Wi-Fi | awk -F 'Subnet mask: ' '/^Subnet mask: / {print $2}'", function(result)
-      mask:set({ label = result })
+      update_cached_label(mask, result)
+      sbar.delay(0.1, function()
+        mask:set({ label = result })
+      end)
     end)
     sbar.exec("networksetup -getinfo Wi-Fi | awk -F 'Router: ' '/^Router: / {print $2}'", function(result)
-      router:set({ label = result })
+      update_cached_label(router, result)
+      sbar.delay(0.1, function()
+        router:set({ label = result })
+      end)
     end)
   else
     hide_details()
@@ -219,9 +256,13 @@ wifi:subscribe("mouse.clicked", toggle_details)
 wifi:subscribe("mouse.exited.global", hide_details)
 
 local function copy_label_to_clipboard(env)
-  local label = sbar.query(env.NAME).label.value
+  -- Use cached label instead of sbar.query() to avoid IPC deadlock
+  local label = cached_labels[env.NAME]
+  if not label then return end
   sbar.exec("echo \"" .. label .. "\" | pbcopy")
-  sbar.set(env.NAME, { label = { string = icons.clipboard, align="center" } })
+  sbar.delay(0.1, function()
+    sbar.set(env.NAME, { label = { string = icons.clipboard, align="center" } })
+  end)
   sbar.delay(1, function()
     sbar.set(env.NAME, { label = { string = label, align = "right" } })
   end)

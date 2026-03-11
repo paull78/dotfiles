@@ -77,7 +77,9 @@ local function animate_detail(detail)
   if (not detail) then interrupt = interrupt - 1 end
   if interrupt > 0 and (not detail) then return end
 
-  sbar.animate("tanh", 30, function()
+  -- Removed animation wrapper to prevent IPC deadlock
+  -- DEADLOCK FIX: Defer :set() calls
+  sbar.delay(0.1, function()
     media_artist:set({ label = { width = detail and "dynamic" or 0 } })
     media_title:set({ label = { width = detail and "dynamic" or 0 } })
   end)
@@ -86,17 +88,22 @@ end
 media_cover:subscribe("media_change", function(env)
   if whitelist[env.INFO.app] then
     local drawing = (env.INFO.state == "playing")
-    media_artist:set({ drawing = drawing, label = env.INFO.artist, })
-    media_title:set({ drawing = drawing, label = env.INFO.title, })
-    media_cover:set({ drawing = drawing })
+    local artist = env.INFO.artist
+    local title = env.INFO.title
+    -- DEADLOCK FIX: Defer :set() calls
+    sbar.delay(0.1, function()
+      media_artist:set({ drawing = drawing, label = artist, })
+      media_title:set({ drawing = drawing, label = title, })
+      media_cover:set({ drawing = drawing })
 
-    if drawing then
-      animate_detail(true)
-      interrupt = interrupt + 1
-      sbar.delay(5, animate_detail)
-    else
-      media_cover:set({ popup = { drawing = false } })
-    end
+      if drawing then
+        animate_detail(true)
+        interrupt = interrupt + 1
+        sbar.delay(5, animate_detail)
+      else
+        media_cover:set({ popup = { drawing = false } })
+      end
+    end)
   end
 end)
 
@@ -110,9 +117,15 @@ media_cover:subscribe("mouse.exited", function(env)
 end)
 
 media_cover:subscribe("mouse.clicked", function(env)
-  media_cover:set({ popup = { drawing = "toggle" }})
+  -- DEADLOCK FIX: Defer :set() call
+  sbar.delay(0.1, function()
+    media_cover:set({ popup = { drawing = "toggle" }})
+  end)
 end)
 
 media_title:subscribe("mouse.exited.global", function(env)
-  media_cover:set({ popup = { drawing = false }})
+  -- DEADLOCK FIX: Defer :set() call
+  sbar.delay(0.1, function()
+    media_cover:set({ popup = { drawing = false }})
+  end)
 end)

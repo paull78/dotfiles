@@ -34,7 +34,6 @@ local cpu = sbar.add("graph", "widgets.cpu" , 42, {
 cpu:subscribe("cpu_update", function(env)
   -- Also available: env.user_load, env.sys_load
   local load = tonumber(env.total_load)
-  cpu:push({ load / 100. })
 
   local color = colors.blue
   if load > 30 then
@@ -47,10 +46,14 @@ cpu:subscribe("cpu_update", function(env)
     end
   end
 
-  cpu:set({
-    graph = { color = color },
-    label = "cpu " .. env.total_load .. "%",
-  })
+  -- DEADLOCK FIX: Defer :set() and :push() calls
+  sbar.delay(0.1, function()
+    cpu:push({ load / 100. })
+    cpu:set({
+      graph = { color = color },
+      label = "cpu " .. env.total_load .. "%",
+    })
+  end)
 end)
 
 cpu:subscribe("mouse.clicked", function(env)

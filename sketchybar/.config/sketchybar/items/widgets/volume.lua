@@ -68,6 +68,9 @@ local volume_slider = sbar.add("slider", popup_width, {
   click_script = 'osascript -e "set volume output volume $PERCENTAGE"'
 })
 
+-- Track popup visibility locally to avoid :query() deadlock
+local volume_popup_visible = false
+
 volume_percent:subscribe("volume_change", function(env)
   local volume = tonumber(env.INFO)
   local icon = icons.volume._0
@@ -86,16 +89,23 @@ volume_percent:subscribe("volume_change", function(env)
     lead = "0"
   end
 
-  volume_icon:set({ label = icon })
-  volume_percent:set({ label = lead .. volume .. "%" })
-  volume_slider:set({ slider = { percentage = volume } })
+  -- DEADLOCK FIX: Defer :set() calls
+  sbar.delay(0.1, function()
+    volume_icon:set({ label = icon })
+    volume_percent:set({ label = lead .. volume .. "%" })
+    volume_slider:set({ slider = { percentage = volume } })
+  end)
 end)
 
 local function volume_collapse_details()
-  local drawing = volume_bracket:query().popup.drawing == "on"
-  if not drawing then return end
-  volume_bracket:set({ popup = { drawing = false } })
-  sbar.remove('/volume.device\\.*/')
+  -- Use local state instead of :query() to avoid IPC deadlock
+  if not volume_popup_visible then return end
+  volume_popup_visible = false
+  -- DEADLOCK FIX: Defer :set() call
+  sbar.delay(0.1, function()
+    volume_bracket:set({ popup = { drawing = false } })
+    sbar.remove('/volume.device\\.*/')
+  end)
 end
 
 local current_audio_device = "None"
@@ -105,9 +115,13 @@ local function volume_toggle_details(env)
     return
   end
 
-  local should_draw = volume_bracket:query().popup.drawing == "off"
-  if should_draw then
-    volume_bracket:set({ popup = { drawing = true } })
+  -- Use local state instead of :query() to avoid IPC deadlock
+  if not volume_popup_visible then
+    volume_popup_visible = true
+    -- DEADLOCK FIX: Defer :set() call
+    sbar.delay(0.1, function()
+      volume_bracket:set({ popup = { drawing = true } })
+    end)
     sbar.exec("SwitchAudioSource -t output -c", function(result)
       current_audio_device = result:sub(1, -2)
       sbar.exec("SwitchAudioSource -a -t output", function(available)
