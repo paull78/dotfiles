@@ -110,10 +110,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
-
-eval "$(zoxide init zsh)"
-alias cd='z'
-
 export LC_ALL=en_US.UTF-8
 export NVM_DIR="$(brew --prefix nvm)"
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
@@ -135,3 +131,19 @@ alias ll='eza -la --color=always --group-directories-first'
 alias la='eza -a --color=always --group-directories-first'
 alias lt='eza --tree --color=always --group-directories-first'
 alias l='eza -F --color=always --group-directories-first'
+export PATH="/opt/homebrew/opt/mysql@8.0/bin:$PATH"
+
+# bun completions
+[ -s "/Users/paolo/.bun/_bun" ] && source "/Users/paolo/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/paolo/.lmstudio/bin"
+# End of LM Studio CLI section
+
+
+eval "$(zoxide init zsh)"
+alias cd='z'

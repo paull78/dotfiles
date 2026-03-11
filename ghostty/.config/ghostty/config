@@ -1,6 +1,6 @@
 # Ghostty Configuration
 # Hide titlebar but keep rounded corners and native window borders
-macos-titlebar-style = hidden
+macos-titlebar-style = native
 
 # Optional: Add some padding for better appearance
 window-padding-x = 10
