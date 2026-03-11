@@ -2,6 +2,9 @@
 .DS_Store
 *.swp
 
+# Claude Code local settings
+.claude/
+
 # Secret or machine-specific files
 zsh/.zsh_history
 zsh/.zsh_sessions
