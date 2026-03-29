@@ -44,5 +44,7 @@ yabai -m config layout bsp
 # JankyBorders configuration - add this at the end
 borders active_color=0x80ffffff inactive_color=0xff45475a width=4.0 style=round ax_focus=on &
 
+(sleep 2 && yabai -m config --space 6 layout stack) &
+(sleep 2 && yabai -m config --space 11 layout stack) &
 echo "yabai configuration loaded.."
 

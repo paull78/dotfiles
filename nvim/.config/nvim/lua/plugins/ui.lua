@@ -29,4 +29,13 @@ return {
       },
     },
   },
+
+  -- Ensure git branch is always visible in the statusline
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = function(_, opts)
+      opts.sections = opts.sections or {}
+      opts.sections.lualine_b = { "branch" }
+    end,
+  },
 }

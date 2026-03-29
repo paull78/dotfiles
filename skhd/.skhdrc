@@ -1,6 +1,6 @@
 # Minimal skhd config - Alt shortcuts only
 
-alt - b : open -a "Bear"
+alt - b : open -a "Obsidian"
 alt - c : open -a "Google Meet"
 alt - d : open -a "Claude"
 alt - e : open -a "Microsoft Edge"
@@ -15,3 +15,4 @@ alt - t : open -a "iTerm"
 alt - v : open -a "Visual Studio Code"
 alt - w : open -a "WhatsApp"
 alt - o : open -a "Sourcetree"
+alt - j : open -a "JIRA EDI"

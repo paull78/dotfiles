@@ -147,3 +147,5 @@ export PATH="$PATH:/Users/paolo/.lmstudio/bin"
 
 eval "$(zoxide init zsh)"
 alias cd='z'
+
+alias claude-mem='bun "/Users/paolo/.claude/plugins/cache/thedotmack/claude-mem/10.6.2/scripts/worker-service.cjs"'
