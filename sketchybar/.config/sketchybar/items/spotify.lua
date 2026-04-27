@@ -14,13 +14,16 @@ local SPOTIFY_BG    = 0xff1a1a1a
 -- [logo] [skip] [label] [padding spacer to right_bubble], so we add padding
 -- first, label second, skip third, logo last.
 
--- Spacer between this widget and the right_bubble (rightmost in the group).
--- A `width` larger than the default item padding is needed because items
--- with no icon/label otherwise collapse to ~0 visual gap; we want a clear
--- breathing room between the two pills.
+-- Spacer between this widget and the right_bubble. Width=6 matches the
+-- yabai.padding spacer width so all three bubbles (yabai, spotify, system)
+-- have equal breathing room between them. Previously this had to be 30 to
+-- compensate for the system bubble's left-edge anchor extending into the
+-- spotify.padding territory; now that the system bubble's left edge sits
+-- flush against its leftmost real item (widgets.cpu), the visible gap
+-- equals the configured width directly.
 sbar.add("item", "spotify.padding", {
   position = "right",
-  width = 30,
+  width = 6,
   drawing = false,
 })
 

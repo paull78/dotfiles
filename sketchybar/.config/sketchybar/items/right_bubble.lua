@@ -16,6 +16,12 @@ local colors = require("colors")
 -- The cream border is a separate outer bracket drawn last, so the border
 -- sits on top of all colored fills.
 
+-- Members of every bracket that spans the full bubble. widgets.cpu (NOT
+-- widgets.cpu.padding) is intentionally the leftmost: cpu.padding existed
+-- to anchor the bubble's left edge, but its default item paddings added
+-- ~14px of unused teal to the left of the chip icon. Anchoring on cpu
+-- itself shrinks the bubble so the icon sits flush against the rounded
+-- corner curve, with the icon's own padding_left providing breathing room.
 local member_items = {
   "calendar.cal",
   "widgets.battery",
@@ -28,7 +34,6 @@ local member_items = {
   "widgets.wifi2",
   "widgets.wifi.outer_padding",
   "widgets.cpu",
-  "widgets.cpu.padding",
 }
 
 -- 0. Outer fill: teal backdrop. Drawn first so all inner brackets paint over.
