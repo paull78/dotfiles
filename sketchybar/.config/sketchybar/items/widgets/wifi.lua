@@ -14,6 +14,7 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
   width = 0,
   icon = {
     padding_right = 0,
+    color = colors.bubble.text,
     font = {
       style = settings.font.style_map["Bold"],
       size = 9.0,
@@ -26,7 +27,7 @@ local wifi_up = sbar.add("item", "widgets.wifi1", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.red,
+    color = colors.bubble.text,
     string = "??? Bps",
   },
   y_offset = 4,
@@ -37,6 +38,7 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
   padding_left = -5,
   icon = {
     padding_right = 0,
+    color = colors.bubble.text,
     font = {
       style = settings.font.style_map["Bold"],
       size = 9.0,
@@ -49,7 +51,7 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
       style = settings.font.style_map["Bold"],
       size = 9.0,
     },
-    color = colors.blue,
+    color = colors.bubble.text,
     string = "??? Bps",
   },
   y_offset = -4,
@@ -57,21 +59,17 @@ local wifi_down = sbar.add("item", "widgets.wifi2", {
 
 local wifi = sbar.add("item", "widgets.wifi.padding", {
   position = "right",
+  icon = { color = colors.bubble.text },
   label = { drawing = false },
+  -- Popup attached to the item (not the bracket) so popup items keep their
+  -- anchor when the bracket is created later in items.right_bubble.
+  popup = { align = "center", height = 30 },
 })
 
--- Background around the item
-local wifi_bracket = sbar.add("bracket", "widgets.wifi.bracket", {
-  wifi.name,
-  wifi_up.name,
-  wifi_down.name
-}, {
-  background = { color = colors.bg1 },
-  popup = { align = "center", height = 30 }
-})
+-- Bracket is created in items.right_bubble.lua for z-order control.
 
 local ssid = sbar.add("item", {
-  position = "popup." .. wifi_bracket.name,
+  position = "popup." .. wifi.name,
   icon = {
     font = {
       style = settings.font.style_map["Bold"]
@@ -96,7 +94,7 @@ local ssid = sbar.add("item", {
 })
 
 local hostname = sbar.add("item", {
-  position = "popup." .. wifi_bracket.name,
+  position = "popup." .. wifi.name,
   icon = {
     align = "left",
     string = "Hostname:",
@@ -111,7 +109,7 @@ local hostname = sbar.add("item", {
 })
 
 local ip = sbar.add("item", {
-  position = "popup." .. wifi_bracket.name,
+  position = "popup." .. wifi.name,
   icon = {
     align = "left",
     string = "IP:",
@@ -125,7 +123,7 @@ local ip = sbar.add("item", {
 })
 
 local mask = sbar.add("item", {
-  position = "popup." .. wifi_bracket.name,
+  position = "popup." .. wifi.name,
   icon = {
     align = "left",
     string = "Subnet mask:",
@@ -139,7 +137,7 @@ local mask = sbar.add("item", {
 })
 
 local router = sbar.add("item", {
-  position = "popup." .. wifi_bracket.name,
+  position = "popup." .. wifi.name,
   icon = {
     align = "left",
     string = "Router:",
@@ -152,28 +150,26 @@ local router = sbar.add("item", {
   },
 })
 
-sbar.add("item", { position = "right", width = settings.group_paddings })
+sbar.add("item", "widgets.wifi.outer_padding", { position = "right", width = 0 })
 
 -- Track popup visibility locally to avoid :query() deadlock
 local wifi_popup_visible = false
 
 wifi_up:subscribe("network_update", function(env)
-  local up_color = (env.upload == "000 Bps") and colors.grey or colors.red
-  local down_color = (env.download == "000 Bps") and colors.grey or colors.blue
   -- DEADLOCK FIX: Defer :set() calls
   sbar.delay(0.1, function()
     wifi_up:set({
-      icon = { color = up_color },
+      icon = { color = colors.bubble.text },
       label = {
         string = env.upload,
-        color = up_color
+        color = colors.bubble.text
       }
     })
     wifi_down:set({
-      icon = { color = down_color },
+      icon = { color = colors.bubble.text },
       label = {
         string = env.download,
-        color = down_color
+        color = colors.bubble.text
       }
     })
   end)
@@ -187,7 +183,7 @@ wifi:subscribe({"wifi_change", "system_woke"}, function(env)
       wifi:set({
         icon = {
           string = connected and icons.wifi.connected or icons.wifi.disconnected,
-          color = connected and colors.white or colors.red,
+          color = connected and colors.bubble.text or colors.bubble.border,
         },
       })
     end)
@@ -204,7 +200,7 @@ end
 local function hide_details()
   wifi_popup_visible = false
   sbar.delay(0.1, function()
-    wifi_bracket:set({ popup = { drawing = false } })
+    wifi:set({ popup = { drawing = false } })
   end)
 end
 
@@ -213,7 +209,7 @@ local function toggle_details()
   if not wifi_popup_visible then
     wifi_popup_visible = true
     sbar.delay(0.1, function()
-      wifi_bracket:set({ popup = { drawing = true }})
+      wifi:set({ popup = { drawing = true }})
     end)
     sbar.exec("networksetup -getcomputername", function(result)
       update_cached_label(hostname, result)

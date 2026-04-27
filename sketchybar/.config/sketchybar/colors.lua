@@ -20,6 +20,17 @@ return {
 	bg1 = 0xff313244,
 	bg2 = 0xff414550,
 
+	-- Right-side segmented pill ("bubble") theme
+	bubble = {
+		border  = 0xfff2efe2, -- soft cream outline
+		text    = 0xffffffff, -- pure white for high contrast on colored bubbles
+		network = 0xff8a5fb8, -- saturated purple
+		cpu     = 0xff3f8c7c, -- saturated teal
+		volume  = 0xffc97058, -- saturated salmon
+		time    = 0xff4a8fbf, -- saturated sky blue
+		battery = 0xffd6883a, -- saturated orange
+	},
+
 	with_alpha = function(color, alpha)
 		if alpha > 1.0 or alpha < 0.0 then
 			return color

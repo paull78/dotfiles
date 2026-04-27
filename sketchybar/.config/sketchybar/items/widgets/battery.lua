@@ -44,7 +44,6 @@ battery:subscribe({"routine", "power_source_change", "system_woke"}, function()
       label = charge .. "%"
     end
 
-    local color = colors.green
     local charging, _, _ = batt_info:find("AC Power")
 
     if charging then
@@ -58,10 +57,8 @@ battery:subscribe({"routine", "power_source_change", "system_woke"}, function()
         icon = icons.battery._50
       elseif found and charge > 20 then
         icon = icons.battery._25
-        color = colors.orange
       else
         icon = icons.battery._0
-        color = colors.red
       end
     end
 
@@ -75,9 +72,12 @@ battery:subscribe({"routine", "power_source_change", "system_woke"}, function()
       battery:set({
         icon = {
           string = icon,
-          color = color
+          color = colors.bubble.text
         },
-        label = { string = lead .. label },
+        label = {
+          string = lead .. label,
+          color = colors.bubble.text
+        },
       })
     end)
   end)
@@ -104,11 +104,7 @@ battery:subscribe("mouse.clicked", function(env)
   end
 end)
 
-sbar.add("bracket", "widgets.battery.bracket", { battery.name }, {
-  background = { color = colors.bg1 }
-})
-
 sbar.add("item", "widgets.battery.padding", {
   position = "right",
-  width = settings.group_paddings
+  width = 0
 })

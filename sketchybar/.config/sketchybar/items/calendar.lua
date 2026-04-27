@@ -1,12 +1,19 @@
 local settings = require("settings")
 local colors = require("colors")
 
--- Padding item required because of bracket
-sbar.add("item", { position = "right", width = settings.group_paddings })
+-- Right-edge anchor: must be added BEFORE calendar.cal so it sits at the
+-- absolute rightmost slot. Sketchybar brackets struggle to bound the very
+-- last item in the bar; pinning a 1px sentinel here lets the right_bubble
+-- bracket reliably extend through calendar.cal.
+sbar.add("item", "right_edge_anchor", {
+  position = "right",
+  width = 1,
+  background = { drawing = false },
+})
 
-local cal = sbar.add("item", {
+local cal = sbar.add("item", "calendar.cal", {
   icon = {
-    color = colors.white,
+    color = colors.bubble.text,
     padding_left = 8,
     font = {
       style = settings.font.style_map["Black"],
@@ -14,7 +21,7 @@ local cal = sbar.add("item", {
     },
   },
   label = {
-    color = colors.white,
+    color = colors.bubble.text,
     padding_right = 8,
     width = 49,
     align = "right",
@@ -24,25 +31,11 @@ local cal = sbar.add("item", {
   update_freq = 30,
   padding_left = 1,
   padding_right = 1,
-  background = {
-    color = colors.bg2,
-    border_color = colors.black,
-    border_width = 1
-  },
+  background = { drawing = false },
   click_script = "open -a 'Calendar'"
 })
 
--- Double border for calendar using a single item bracket
-sbar.add("bracket", { cal.name }, {
-  background = {
-    color = colors.transparent,
-    height = 30,
-    border_color = colors.grey,
-  }
-})
-
--- Padding item required because of bracket
-sbar.add("item", { position = "right", width = settings.group_paddings })
+-- Bracket is created in items.right_bubble.lua for z-order control.
 
 cal:subscribe({ "forced", "routine", "system_woke" }, function(env)
   local icon = os.date("%a. %d %b.")

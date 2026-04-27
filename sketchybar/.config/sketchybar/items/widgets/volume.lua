@@ -9,6 +9,7 @@ local volume_percent = sbar.add("item", "widgets.volume1", {
   icon = { drawing = false },
   label = {
     string = "??%",
+    color = colors.bubble.text,
     padding_left = -1,
     font = { family = settings.font.numbers }
   },
@@ -21,7 +22,7 @@ local volume_icon = sbar.add("item", "widgets.volume2", {
     string = icons.volume._100,
     width = 0,
     align = "left",
-    color = colors.grey,
+    color = colors.bubble.text,
     font = {
       style = settings.font.style_map["Regular"],
       size = 14.0,
@@ -30,28 +31,26 @@ local volume_icon = sbar.add("item", "widgets.volume2", {
   label = {
     width = 25,
     align = "left",
+    color = colors.bubble.text,
     font = {
       style = settings.font.style_map["Regular"],
       size = 14.0,
     },
   },
+  -- Popup attached to the item (not the bracket) so popup items keep their
+  -- anchor when the bracket is created later in items.right_bubble.
+  popup = { align = "center" },
 })
 
-local volume_bracket = sbar.add("bracket", "widgets.volume.bracket", {
-  volume_icon.name,
-  volume_percent.name
-}, {
-  background = { color = colors.bg1 },
-  popup = { align = "center" }
-})
+-- Bracket is created in items.right_bubble.lua for z-order control.
 
 sbar.add("item", "widgets.volume.padding", {
   position = "right",
-  width = settings.group_paddings
+  width = 0
 })
 
 local volume_slider = sbar.add("slider", popup_width, {
-  position = "popup." .. volume_bracket.name,
+  position = "popup." .. volume_icon.name,
   slider = {
     highlight_color = colors.blue,
     background = {
@@ -103,7 +102,7 @@ local function volume_collapse_details()
   volume_popup_visible = false
   -- DEADLOCK FIX: Defer :set() call
   sbar.delay(0.1, function()
-    volume_bracket:set({ popup = { drawing = false } })
+    volume_icon:set({ popup = { drawing = false } })
     sbar.remove('/volume.device\\.*/')
   end)
 end
@@ -120,7 +119,7 @@ local function volume_toggle_details(env)
     volume_popup_visible = true
     -- DEADLOCK FIX: Defer :set() call
     sbar.delay(0.1, function()
-      volume_bracket:set({ popup = { drawing = true } })
+      volume_icon:set({ popup = { drawing = true } })
     end)
     sbar.exec("SwitchAudioSource -t output -c", function(result)
       current_audio_device = result:sub(1, -2)
@@ -135,7 +134,7 @@ local function volume_toggle_details(env)
             color = colors.white
           end
           sbar.add("item", "volume.device." .. counter, {
-            position = "popup." .. volume_bracket.name,
+            position = "popup." .. volume_icon.name,
             width = popup_width,
             align = "center",
             label = { string = device, color = color },

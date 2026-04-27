@@ -6,7 +6,7 @@ alt - d : open -a "Claude"
 alt - e : open -a "Microsoft Edge"
 alt - f : open -a "Finder"
 alt - g : open -a "Ghostty"
-alt - h : open -a "GitHub"
+alt - h : open -a "/Users/paolo/Applications/Edge Apps.localized/GitHub.app"
 alt - l : open -a "Slack"
 alt - m : open -a "Mail"
 alt - k : open -a "Spark"
@@ -16,3 +16,13 @@ alt - v : open -a "Visual Studio Code"
 alt - w : open -a "WhatsApp"
 alt - o : open -a "Sourcetree"
 alt - j : open -a "JIRA EDI"
+alt - p : open -a "spotify"
+
+# Yabai: cycle layout bsp → stack → float → bsp (mirrors the click on the
+# yabai sketchybar bubble). Full paths because skhd runs with a minimal PATH.
+alt - 0x32 : current=$(/opt/homebrew/bin/yabai -m query --spaces --space | /opt/homebrew/bin/jq -r .type); \
+             case "$current" in \
+               bsp)   /opt/homebrew/bin/yabai -m space --layout stack ;; \
+               stack) /opt/homebrew/bin/yabai -m space --layout float ;; \
+               *)     /opt/homebrew/bin/yabai -m space --layout bsp ;; \
+             esac
