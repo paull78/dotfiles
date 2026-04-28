@@ -26,6 +26,7 @@ return {
 		text    = 0xffffffff, -- pure white for high contrast on colored bubbles
 		network = 0xff8a5fb8, -- saturated purple
 		cpu     = 0xff3f8c7c, -- saturated teal
+		gpu     = 0xff5fa67c, -- saturated green (sibling of cpu's teal)
 		volume  = 0xffc97058, -- saturated salmon
 		time    = 0xff4a8fbf, -- saturated sky blue
 		battery = 0xffd6883a, -- saturated orange
