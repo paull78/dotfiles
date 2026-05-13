@@ -1,7 +1,11 @@
 # Ghostty Configuration
-# Hide titlebar but keep rounded corners and native window borders
-macos-titlebar-style = native
+# Hide titlebar but keep traffic lights and rounded corners
+macos-titlebar-style = hidden
 
 # Optional: Add some padding for better appearance
 window-padding-x = 10
 window-padding-y = 10
+
+# Auto-install Ghostty's terminfo on remote hosts over SSH and propagate TERM,
+# so apps like mc/htop/vim get colors and arrow keys on the remote.
+shell-integration-features = ssh-env,ssh-terminfo
