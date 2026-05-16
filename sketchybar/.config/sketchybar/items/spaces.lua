@@ -5,7 +5,7 @@ local app_icons = require("helpers.app_icons")
 
 local spaces = {}
 
-for i = 1, 10, 1 do
+for i = 1, 12, 1 do
 	local space = sbar.add("space", "space." .. i, {
 		space = i,
 		icon = {
@@ -94,35 +94,29 @@ for i = 1, 10, 1 do
 	--
 	space:subscribe("mouse.clicked", function(env)
 		if env.BUTTON == "other" then
-			-- DEADLOCK FIX: Defer :set() calls
 			sbar.delay(0.1, function()
-				space_popup:set({ background = { image = "space." .. env.SID } })
+				space_popup:set({ background = { image = "space." .. env.NAME } })
 				space:set({ popup = { drawing = "toggle" } })
 			end)
 		else
+			-- Yabai space focus needs the scripting-addition (partial SIP disable),
+			-- which isn't installed here. Falling back to sending macOS keyboard
+			-- shortcuts (System Settings → Keyboard → Shortcuts → Mission Control →
+			-- "Switch to Desktop N"). Destroy is intentionally not wired.
 			local keycodes = {
-				[1] = 18,
-				[2] = 19,
-				[3] = 20,
-				[4] = 21,
-				[5] = 23, -- 5
-				[6] = 22, -- 6
-				[7] = 26,
-				[8] = 28,
-				[9] = 25,
-				[10] = 29, -- 0 (desktop 10)
+				[1] = 18, [2] = 19, [3] = 20, [4] = 21,
+				[5] = 23, [6] = 22, [7] = 26, [8] = 28,
+				[9] = 25, [10] = 29,
+				-- [11], [12]: add their keycodes once bound in macOS Settings
 			}
-
 			local idx = tonumber(env.NAME:match("space%.(%d+)$"))
-			local keycode = keycodes[idx]
-
-			local op = (env.BUTTON == "right") and "--destroy" or "--focus"
-			sbar.exec(
-				string.format(
-					"osascript -e 'tell application \"System Events\" to key code %d  using control down'",
+			local keycode = idx and keycodes[idx]
+			if keycode then
+				sbar.exec(string.format(
+					"osascript -e 'tell application \"System Events\" to key code %d using control down'",
 					keycode
-				)
-			)
+				))
+			end
 		end
 	end)
 
@@ -138,6 +132,42 @@ local space_window_observer = sbar.add("item", {
 	drawing = false,
 	updates = true,
 })
+
+-- Collapse per-space app-icon labels when any connected display is narrow
+-- (typically the laptop's built-in). Decision uses the *minimum* width across
+-- all displays, not the active one — otherwise moving the mouse to a wide
+-- external would re-expand labels on the laptop bar too.
+-- Note: sketchybar applies item state globally across bars, so when both a
+-- narrow and wide display are connected, both bars lose labels.
+local NARROW_WIDTH_THRESHOLD = 1800
+
+local function apply_space_label_visibility()
+	sbar.exec(
+		"yabai -m query --displays 2>/dev/null | "
+			.. "python3 -c 'import sys,json; "
+			.. "print(int(min(d[\"frame\"][\"w\"] for d in json.load(sys.stdin))))' "
+			.. "2>/dev/null",
+		function(width_str)
+			local width = tonumber(width_str)
+			-- If we can't determine width, fail open: show labels.
+			local show = width == nil or width >= NARROW_WIDTH_THRESHOLD
+			for _, sp in ipairs(spaces) do
+				sp:set({ label = { drawing = show } })
+			end
+		end
+	)
+end
+
+-- Initial evaluation, then re-evaluate on display change.
+sbar.delay(0.2, apply_space_label_visibility)
+
+local display_observer = sbar.add("item", {
+	drawing = false,
+	updates = true,
+})
+display_observer:subscribe("display_change", function(_)
+	sbar.delay(0.1, apply_space_label_visibility)
+end)
 
 local spaces_indicator = sbar.add("item", {
 	padding_left = -3,
