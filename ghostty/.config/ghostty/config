@@ -6,6 +6,35 @@ macos-titlebar-style = hidden
 window-padding-x = 10
 window-padding-y = 10
 
+# Subtle translucency. 1.0 = fully opaque, lower = more see-through.
+background-opacity = 0.95
+background-blur-radius = 20
+
 # Auto-install Ghostty's terminfo on remote hosts over SSH and propagate TERM,
 # so apps like mc/htop/vim get colors and arrow keys on the remote.
 shell-integration-features = ssh-env,ssh-terminfo
+
+# Color theme — imported from iTerm2 "Default" profile (Solarized Dark).
+background = 002b36
+foreground = 839496
+cursor-color = 839496
+cursor-text = 073642
+selection-background = 073642
+selection-foreground = 93a1a1
+
+palette = 0=#073642
+palette = 1=#dc322f
+palette = 2=#859900
+palette = 3=#b58900
+palette = 4=#268bd2
+palette = 5=#d33682
+palette = 6=#2aa198
+palette = 7=#eee8d5
+palette = 8=#002b36
+palette = 9=#cb4b16
+palette = 10=#586e75
+palette = 11=#657b83
+palette = 12=#839496
+palette = 13=#6c71c4
+palette = 14=#93a1a1
+palette = 15=#fdf6e3
