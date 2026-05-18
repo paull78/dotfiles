@@ -13,13 +13,13 @@ for i = 1, 12, 1 do
 			string = i,
 			padding_left = 15,
 			padding_right = 8,
-			color = colors.white,
-			highlight_color = colors.red,
+			color = colors.screen.inactive_text,
+			highlight_color = colors.screen.active_text,
 		},
 		label = {
 			padding_right = 20,
-			color = colors.grey,
-			highlight_color = colors.white,
+			color = colors.screen.inactive_label,
+			highlight_color = colors.screen.active_text,
 			font = "sketchybar-app-font:Regular:16.0",
 			y_offset = -1,
 		},
@@ -29,18 +29,20 @@ for i = 1, 12, 1 do
 			color = colors.bg1,
 			border_width = 1,
 			height = 26,
-			border_color = colors.black,
+			border_color = colors.bg2,
 		},
 		popup = { background = { border_width = 5, border_color = colors.black } },
 	})
 
 	spaces[i] = space
 
-	-- Single item bracket for space items to achieve double border on highlight
+	-- Single item bracket for space items to achieve double border on highlight.
+	-- Outer ring gets this tile's assigned color (cycling through the bubble
+	-- palette, darkened) so inactive tiles still carry visible per-space color.
 	local space_bracket = sbar.add("bracket", { space.name }, {
 		background = {
 			color = colors.transparent,
-			border_color = colors.bg2,
+			border_color = colors.screen.inactive_borders[i],
 			height = 28,
 			border_width = 2,
 		},
@@ -68,16 +70,22 @@ for i = 1, 12, 1 do
 
 	space:subscribe("space_change", function(env)
 		local selected = env.SELECTED == "true"
-		local color = selected and colors.grey or colors.bg2
 		-- DEADLOCK FIX: Defer :set() calls
 		sbar.delay(0.1, function()
 			space:set({
 				icon = { highlight = selected },
 				label = { highlight = selected },
-				background = { border_color = selected and colors.black or colors.bg2 },
+				background = {
+					-- Active fill uses this tile's own assigned color (same as its
+					-- inactive outer ring), so each space "lights up" in its own hue.
+					color = selected and colors.screen.inactive_borders[i] or colors.bg1,
+					border_color = selected and colors.screen.active_border or colors.bg2,
+				},
 			})
 			space_bracket:set({
-				background = { border_color = selected and colors.grey or colors.bg2 },
+				background = {
+					border_color = selected and colors.screen.bracket_active or colors.screen.inactive_borders[i],
+				},
 			})
 		end)
 	end)
