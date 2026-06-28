@@ -9,3 +9,11 @@
 zsh/.zsh_history
 zsh/.zsh_sessions
 starship/.config/starship.local.toml
+
+# Backups and dated snapshots
+*.bak
+*.bak.*
+*_pre_bubble_*/
+
+# Stray nested clone of the LazyVim starter (not part of these dotfiles)
+lazyvim/
