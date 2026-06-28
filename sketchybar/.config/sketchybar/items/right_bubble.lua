@@ -34,6 +34,7 @@ local member_items = {
   "widgets.wifi2",
   "widgets.wifi.outer_padding",
   "widgets.gpu",
+  "widgets.memory",
   "widgets.cpu",
 }
 
@@ -47,9 +48,19 @@ sbar.add("bracket", "right_bubble.fill", member_items, {
   }
 })
 
--- 1. GPU (green, flat). Sits between CPU's teal area (provided by the outer
--- fill bracket) and the wifi segment. Drawn before wifi so wifi paints over
--- if there's any sub-pixel overlap on the right edge.
+-- 1. Memory (olive, flat). Sits between CPU's teal area (provided by the
+-- outer fill bracket) and the GPU's green segment.
+sbar.add("bracket", "widgets.memory.bracket", { "widgets.memory" }, {
+  background = {
+    color = colors.bubble.memory,
+    border_width = 0,
+    corner_radius = 0,
+    height = 30,
+  }
+})
+
+-- 2. GPU (green, flat). Sits between memory and the wifi segment.
+-- Drawn before wifi so wifi paints over if there's any sub-pixel overlap.
 sbar.add("bracket", "widgets.gpu.bracket", { "widgets.gpu" }, {
   background = {
     color = colors.bubble.gpu,

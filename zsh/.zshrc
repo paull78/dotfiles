@@ -145,7 +145,52 @@ export PATH="$PATH:/Users/paolo/.lmstudio/bin"
 # End of LM Studio CLI section
 
 
-eval "$(zoxide init zsh)"
 alias cd='z'
 
 alias claude-mem='bun "/Users/paolo/.claude/plugins/cache/thedotmack/claude-mem/10.6.2/scripts/worker-service.cjs"'
+
+# Zellij layouts
+alias zjbais='zellij --layout bais'
+alias zjb4='zellij --layout b4'
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/paolo/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/paolo/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/paolo/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/paolo/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+# Added by ~/code/local-dev-stack/bin/init.sh — process-compose alias
+alias pc='process-compose -f $HOME/code/local-dev-stack/process-compose.yml'
+
+# pclog — follow a process-compose log in less, backed by a real file
+# so `v` opens it in $EDITOR (nvim) for grep/yank/etc.
+#
+#   pclog bas              # follow inside less, tee to /tmp/pc-bas.log
+#
+# Inside less:
+#   Ctrl-C   → pause follow, enter nav mode (j/k/g/G, /pattern, n/N)
+#   Shift-F  → resume follow
+#   v        → open the file in $EDITOR
+#   q        → quit (producer is killed)
+#
+# Tail from another shell with: tail -f /tmp/pc-<name>.log
+pclog() {
+    if [[ -z "$1" ]]; then
+        echo "usage: pclog <process-name>" >&2
+        return 2
+    fi
+    local out="/tmp/pc-$1.log"
+    echo "→ writing to $out" >&2
+    : > "$out"
+    # Producer runs in the background so Ctrl-C in less doesn't reach it;
+    # less +F follows the file like tail -f. On quit, kill the producer.
+    ( trap '' INT; process-compose process logs "$1" -f >> "$out" ) &
+    local pid=$!
+    less -R +F "$out"
+    kill "$pid" 2>/dev/null
+}
+
+eval "$(zoxide init zsh)"
+
+# Added by ~/code/local-dev-stack/bin/init.sh — process-compose aliases
+alias pclog='/Users/paolo/code/local-dev-stack/bin/pclog.sh'

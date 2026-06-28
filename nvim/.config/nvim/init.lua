@@ -25,7 +25,7 @@ vim.g.maplocalleader = "\\"
 require("lazy").setup({
   spec = {
     { "LazyVim/LazyVim", import = "lazyvim.plugins",
-      opts = { colorscheme = "catppuccin" },
+      opts = { colorscheme = "vscode" },
     },
     -- Language packs
     { import = "lazyvim.plugins.extras.lang.typescript" },
@@ -37,7 +37,7 @@ require("lazy").setup({
     { import = "plugins" },
   },
   defaults = { lazy = false, version = false },
-  install = { colorscheme = { "catppuccin", "haiku" } },
+  install = { colorscheme = { "vscode", "habamax" } },
   checker = { enabled = true },
   performance = {
     rtp = {
