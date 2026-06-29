@@ -32,12 +32,24 @@ stow */
 
 ## SketchyBar
 
-![SketchyBar menu bar](.github/screenshots/sketchybar-full.png)
-
 A custom [SketchyBar](https://felixkratz.github.io/SketchyBar/) setup written in
 Lua, with hand-written C event providers for CPU and network load, a per-space
 color palette, and a launchd watchdog that auto-restarts the bar if it deadlocks
 (see [`helpers/WATCHDOG_README.md`](sketchybar/.config/sketchybar/helpers/WATCHDOG_README.md)).
+
+The bar, left to right:
+
+**Workspaces and the focused app**
+
+![Spaces and front app](.github/screenshots/sketchybar-left.png)
+
+**Window-manager layout bubble and the now-playing track**
+
+![yabai and Spotify](.github/screenshots/sketchybar-center.png)
+
+**System widgets — CPU, memory, GPU, network, volume, battery, and clock**
+
+![System widgets](.github/screenshots/sketchybar-right.png)
 
 ## Keyboard shortcuts (skhd)
 
