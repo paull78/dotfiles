@@ -14,6 +14,11 @@ Auto-restarts sketchybar when it deadlocks (mach_send_message stall, see
 
 ## Install
 
+> **Note:** launchd does not expand `~` or `$HOME` inside a plist, so the
+> `ProgramArguments` path in `com.paolo.sketchybar.watchdog.plist` is hardcoded
+> to my home directory. Edit it to point at your own
+> `~/.config/sketchybar/helpers/watchdog.sh` before loading.
+
 ```sh
 # Symlink the plist into LaunchAgents
 ln -sf ~/.config/sketchybar/helpers/com.paolo.sketchybar.watchdog.plist \

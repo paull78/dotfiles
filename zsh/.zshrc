@@ -122,7 +122,7 @@ export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-ran
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 
 . "$HOME/.local/bin/env"
-. "/Users/paolo/.deno/env"
+. "$HOME/.deno/env"
 
 
 # eza aliases to replace ls
@@ -134,30 +134,30 @@ alias l='eza -F --color=always --group-directories-first'
 export PATH="/opt/homebrew/opt/mysql@8.0/bin:$PATH"
 
 # bun completions
-[ -s "/Users/paolo/.bun/_bun" ] && source "/Users/paolo/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/paolo/.lmstudio/bin"
+export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
 
 alias cd='z'
 
-alias claude-mem='bun "/Users/paolo/.claude/plugins/cache/thedotmack/claude-mem/10.6.2/scripts/worker-service.cjs"'
+alias claude-mem='bun "$HOME/.claude/plugins/cache/thedotmack/claude-mem/10.6.2/scripts/worker-service.cjs"'
 
 # Zellij layouts
 alias zjbais='zellij --layout bais'
 alias zjb4='zellij --layout b4'
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/paolo/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/paolo/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/paolo/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/paolo/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
 
 # Added by ~/code/local-dev-stack/bin/init.sh — process-compose alias
 alias pc='process-compose -f $HOME/code/local-dev-stack/process-compose.yml'
@@ -191,6 +191,3 @@ pclog() {
 }
 
 eval "$(zoxide init zsh)"
-
-# Added by ~/code/local-dev-stack/bin/init.sh — process-compose aliases
-alias pclog='/Users/paolo/code/local-dev-stack/bin/pclog.sh'

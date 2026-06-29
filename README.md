@@ -30,6 +30,33 @@ stow zsh nvim ghostty
 stow */
 ```
 
+## SketchyBar
+
+![SketchyBar menu bar](.github/screenshots/sketchybar-full.png)
+
+A custom [SketchyBar](https://felixkratz.github.io/SketchyBar/) setup written in
+Lua, with hand-written C event providers for CPU and network load, a per-space
+color palette, and a launchd watchdog that auto-restarts the bar if it deadlocks
+(see [`helpers/WATCHDOG_README.md`](sketchybar/.config/sketchybar/helpers/WATCHDOG_README.md)).
+
+## Keyboard shortcuts (skhd)
+
+[skhd](https://github.com/koekeishiya/skhd) binds <kbd>Alt</kbd> + a letter to
+launch or focus an app:
+
+| Shortcut          | App                | Shortcut          | App                |
+| ----------------- | ------------------ | ----------------- | ------------------ |
+| <kbd>Alt</kbd>+B  | Obsidian           | <kbd>Alt</kbd>+M  | Mail               |
+| <kbd>Alt</kbd>+C  | Google Meet        | <kbd>Alt</kbd>+O  | Sourcetree         |
+| <kbd>Alt</kbd>+D  | Claude             | <kbd>Alt</kbd>+P  | Spotify            |
+| <kbd>Alt</kbd>+E  | Microsoft Edge     | <kbd>Alt</kbd>+S  | Safari             |
+| <kbd>Alt</kbd>+F  | Finder             | <kbd>Alt</kbd>+T  | iTerm              |
+| <kbd>Alt</kbd>+G  | Ghostty            | <kbd>Alt</kbd>+V  | Visual Studio Code |
+| <kbd>Alt</kbd>+H  | GitHub             | <kbd>Alt</kbd>+W  | WhatsApp           |
+| <kbd>Alt</kbd>+J  | Jira               | <kbd>Alt</kbd>+`  | Cycle yabai layout |
+| <kbd>Alt</kbd>+K  | Spark              |                   | (bsp → stack → float) |
+| <kbd>Alt</kbd>+L  | Slack              |                   |                    |
+
 ## Notes
 
 These are tuned for my own machine, so some paths and tool locations
