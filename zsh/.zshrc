@@ -190,4 +190,7 @@ pclog() {
     kill "$pid" 2>/dev/null
 }
 
+# Machine-local secrets and overrides, not tracked in dotfiles
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
 eval "$(zoxide init zsh)"

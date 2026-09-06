@@ -3,7 +3,7 @@
 *.swp
 
 # Claude Code local settings
-.claude/
+/.claude/
 
 # Secret or machine-specific files
 zsh/.zsh_history
