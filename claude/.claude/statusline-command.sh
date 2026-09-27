@@ -31,6 +31,11 @@ FOLDER_COLORS=(
   "45;212;191"  # bright teal   #2dd4bf
 )
 
+# Percentages arrive as "37.4". Under a locale whose decimal separator is a
+# comma (it_IT, de_DE, fr_FR ...) printf %.0f rejects them, truncating instead
+# of rounding and warning on stderr. Force C numerics.
+export LC_NUMERIC=C
+
 input=$(cat)
 
 # Fields
@@ -70,10 +75,10 @@ fi
 # Segment 1: model (blue bg)
 printf "${FG_BG1}${BG_BLUE}${FG0} ${MODEL} ${RESET}"
 # blue -> yellow separator
-printf "${FG_BLUE}${BG_YELLOW}${RESET}"
+printf "${FG_BLUE}${BG_YELLOW}\ue0b0${RESET}"
 # Segment 2: context + rate limits (yellow/gold bg)
 printf "${FG_BG1}${BG_YELLOW}${FG0}${CTX_STR}${RATE_STR} ${RESET}"
-printf "${FG_YELLOW}${RESET}"
+printf "${FG_YELLOW}\ue0b0${RESET}"
 # Segment 3: current folder, colored by a hash of its path
 printf " ${FG_FOLDER}${FOLDER}${RESET}"
 printf "\n"
