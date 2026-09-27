@@ -8,6 +8,11 @@ BG_BLUE='\033[48;2;69;133;136m'   # #458588
 
 FG_YELLOW='\033[38;2;215;153;33m'
 FG_BLUE='\033[38;2;69;133;136m'
+
+# Text colour for bright backgrounds. Cream #fbf1c7 on the yellow #d79921
+# measures 2.19:1 contrast -- well under the 4.5:1 WCAG AA threshold and
+# genuinely hard to read. Gruvbox bg0 #282828 on the same yellow is 5.94:1.
+FG_DARK='\033[38;2;40;40;40m'    # #282828
 FG_BG1='\033[38;2;60;56;54m'
 RESET='\033[0m'
 
@@ -77,7 +82,7 @@ printf "${FG_BG1}${BG_BLUE}${FG0} ${MODEL} ${RESET}"
 # blue -> yellow separator
 printf "${FG_BLUE}${BG_YELLOW}\ue0b0${RESET}"
 # Segment 2: context + rate limits (yellow/gold bg)
-printf "${FG_BG1}${BG_YELLOW}${FG0}${CTX_STR}${RATE_STR} ${RESET}"
+printf "${BG_YELLOW}${FG_DARK}${CTX_STR}${RATE_STR} ${RESET}"
 printf "${FG_YELLOW}\ue0b0${RESET}"
 # Segment 3: current folder, colored by a hash of its path
 printf " ${FG_FOLDER}${FOLDER}${RESET}"
