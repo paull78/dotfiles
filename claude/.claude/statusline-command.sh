@@ -85,11 +85,11 @@ fi
 
 # Segment 1: model (blue bg)
 printf "${FG_BG1}${BG_BLUE}${FG0} ${MODEL} ${RESET}"
-# blue -> yellow separator
-printf "${FG_BLUE}${BG_YELLOW}\ue0b0${RESET}"
+# blue -> yellow separator (U+E0B0 as UTF-8 bytes: bash 3.2 printf has no \\u)
+printf "${FG_BLUE}${BG_YELLOW}\xee\x82\xb0${RESET}"
 # Segment 2: context + rate limits (yellow/gold bg)
 printf "${BG_YELLOW}${FG_DARK}${CTX_STR}${RATE_STR} ${RESET}"
-printf "${FG_YELLOW}\ue0b0${RESET}"
+printf "${FG_YELLOW}\xee\x82\xb0${RESET}"
 # Segment 3: current folder, colored by a hash of its path
 printf " ${FG_FOLDER}${FOLDER}${RESET}"
 # Segment 4: git branch of the session's working directory (nothing outside a repo)
