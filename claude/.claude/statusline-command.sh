@@ -72,9 +72,15 @@ if [ -n "$USED_PCT" ] && [ -n "$CTX_SIZE" ]; then
 fi
 
 FIVE_H=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
+# resets_at is Unix epoch seconds; show it as local wall-clock time (HH:MM).
+FIVE_H_RESET=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 RATE_STR=""
 if [ -n "$FIVE_H" ]; then
   RATE_STR=" 5h:$(printf '%.0f' "$FIVE_H")%%"
+  if [ -n "$FIVE_H_RESET" ]; then
+    RESET_TIME=$(date -r "${FIVE_H_RESET%.*}" +%H:%M 2>/dev/null)
+    [ -n "$RESET_TIME" ] && RATE_STR="${RATE_STR} ↻${RESET_TIME}"
+  fi
 fi
 
 # Segment 1: model (blue bg)
@@ -86,4 +92,10 @@ printf "${BG_YELLOW}${FG_DARK}${CTX_STR}${RATE_STR} ${RESET}"
 printf "${FG_YELLOW}\ue0b0${RESET}"
 # Segment 3: current folder, colored by a hash of its path
 printf " ${FG_FOLDER}${FOLDER}${RESET}"
+# Segment 4: git branch of the session's working directory (nothing outside a repo)
+BRANCH=""
+if [ -n "$CWD" ]; then
+  BRANCH=$(GIT_OPTIONAL_LOCKS=0 git -C "$CWD" branch --show-current 2>/dev/null)
+fi
+[ -n "$BRANCH" ] && printf " ${FG_BLUE}(%s)${RESET}" "$BRANCH"
 printf "\n"
