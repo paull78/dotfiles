@@ -144,9 +144,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$PATH:$HOME/.lmstudio/bin"
 # End of LM Studio CLI section
 
-
-alias cd='z'
-
 alias claude-mem='bun "$HOME/.claude/plugins/cache/thedotmack/claude-mem/10.6.2/scripts/worker-service.cjs"'
 
 # Zellij layouts
@@ -192,5 +189,3 @@ pclog() {
 
 # Machine-local secrets and overrides, not tracked in dotfiles
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
-eval "$(zoxide init zsh)"
