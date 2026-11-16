@@ -94,8 +94,15 @@ printf "${FG_YELLOW}\xee\x82\xb0${RESET}"
 printf " ${FG_FOLDER}${FOLDER}${RESET}"
 # Segment 4: git branch of the session's working directory (nothing outside a repo)
 BRANCH=""
+WT=""
 if [ -n "$CWD" ]; then
   BRANCH=$(GIT_OPTIONAL_LOCKS=0 git -C "$CWD" branch --show-current 2>/dev/null)
+  # A linked worktree has its own git dir, apart from the shared common dir.
+  # (A submodule has both the same, so it does not count.)
+  GIT_DIRS=$(git -C "$CWD" rev-parse --path-format=absolute --git-dir --git-common-dir 2>/dev/null)
+  if [ -n "$GIT_DIRS" ] && [ "$(echo "$GIT_DIRS" | sed -n 1p)" != "$(echo "$GIT_DIRS" | sed -n 2p)" ]; then
+    WT="WT:"
+  fi
 fi
-[ -n "$BRANCH" ] && printf " ${FG_BLUE}(%s)${RESET}" "$BRANCH"
+[ -n "$BRANCH" ] && printf " ${FG_BLUE}${WT}(%s)${RESET}" "$BRANCH"
 printf "\n"
